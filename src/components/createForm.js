@@ -111,7 +111,7 @@ export default {
             {row.option && row.option.map((item, index) => {
               return <el-checkbox key={item.label} {...{ props: { ...item }, attrs: { ...item }, on: { ...item }}}>
                 {item.text}
-              </el-checkbox >
+              </el-checkbox>
             })}
           </el-checkbox-group>
         },

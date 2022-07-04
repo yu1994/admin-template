@@ -172,6 +172,18 @@ export default {
             format: 'yyyy-MM-dd'
           }
         },
+        {
+          type: 'checkbox', label: '资源2', prop: 'checkbox1',
+          option: [
+            { label: '1', text: 'checkbox' },
+            { label: '2', text: 'checkbox2' }
+          ]
+        },
+        {
+          label: '资源', prop: 'resource', type: 'radio',
+          config: {},
+          option: [{ label: '1', text: '线上品牌商赞助' }, { label: '2', text: '线下场地免费' }]
+        },
         { type: 'pic', label: '文章封面', prop: 'coverImgUrl' },
         { type: 'ueditor', label: '发布内容', prop: 'text' }
       ]
@@ -205,6 +217,18 @@ export default {
 
       })
     },
+    onEdit(params) {
+      getAction(`${this.url.edit}/${params.id}`, params).then((res) => {
+        res.result.checkbox1 = ['1']
+        res.result.resource = '1'
+        this.form = res.result
+        this.form.type = this.form.type ? this.form.type.split(',') : []
+        for (let i = 0, len = this.form.type.length; i < len; i += 1) {
+          this.form.type[i] = Number(this.form.type[i])
+        }
+        this.visible = true
+      })
+    },
     handleOk() {
       this.$refs.baseForm.validate((valid) => {
         if (valid) {
@@ -227,16 +251,6 @@ export default {
         } else {
           return false
         }
-      })
-    },
-    onEdit(params) {
-      getAction(`${this.url.edit}/${params.id}`, params).then((res) => {
-        this.form = res.result
-        this.form.type = this.form.type ? this.form.type.split(',') : []
-        for (let i = 0, len = this.form.type.length; i < len; i += 1) {
-          this.form.type[i] = Number(this.form.type[i])
-        }
-        this.visible = true
       })
     },
     handleCancel() {
