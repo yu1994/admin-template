@@ -87,10 +87,6 @@
 
 <script>
 import { postAction, putAction, getAction, action } from '@/api'
-import BaseSearch from '../../../components/BaseSearch'
-import BaseTable from '../../../components/BaseTable'
-import BaseDialog from '../../../components/BaseDialog'
-import BaseForm from '../../../components/BaseForm'
 
 const columns = [
   { label: '标题', prop: 'title' },
@@ -105,8 +101,6 @@ const queryItems = [
 ]
 export default {
   name: 'Article',
-  components: { BaseForm, BaseDialog, BaseTable, BaseSearch },
-  //  mixins: [tableMixins],
   data() {
     return {
       // 搜索条件
@@ -117,9 +111,9 @@ export default {
         pageSize: 10,
         title: null
       },
+      columns,
       list: [],
       listLoading: false,
-      columns,
       total: 0,
       visible: false,
       loading: false,
@@ -134,47 +128,54 @@ export default {
         edit: '/article/article/info',
         update: '/article/article/update',
         type: '/article/tag/list'
+      },
+      options: {
+        type: []
       }
     }
   },
   created() {
-    this.getList()
-    getAction(this.url.type).then((res) => {
-      const { result } = res
-      this.formItem[0].option = result.slice(1, result.length)
-    })
-    this.formItem = [
-      {
-        type: 'select',
-        label: '类型',
-        prop: 'type',
-        config: {
-          valueKey: 'id',
-          labelKey: 'title',
-          props: {
-            multiple: true
-          },
-          on: {
-            change: this.onChange
-          }
-        },
-        option: []
-      },
-      { label: '自定义', prop: 'custom' },
-      { label: '自定义2', prop: 'custom2', render: () => <div>自定义2</div> },
-      { type: 'input', label: '标题', prop: 'title', rules: [{ required: true, message: '请输入标题' }] },
-      {
-        type: 'datePicker', label: '发布时间', prop: 'publishDate',
-        config: {
-          type: 'date',
-          format: 'yyyy-MM-dd'
-        }
-      },
-      { type: 'pic', label: '文章封面', prop: 'coverImgUrl' },
-      { type: 'ueditor', label: '发布内容', prop: 'text' }
-    ]
+    this.init()
   },
   methods: {
+    async init() {
+      this.getList()
+      await getAction(this.url.type).then((res) => {
+        const { result } = res
+        // this.formItem[0].option = result.slice(1, result.length)
+        this.options.type = result.slice(1, result.length)
+      })
+      this.formItem = [
+        {
+          type: 'select',
+          label: '类型',
+          prop: 'type',
+          config: {
+            valueKey: 'id',
+            labelKey: 'title',
+            props: {
+              multiple: true
+            },
+            on: {
+              change: this.onChange
+            }
+          },
+          option: this.options.type
+        },
+        { label: '自定义', prop: 'custom' },
+        { label: '自定义2', prop: 'custom2', render: () => <div onClick={this.onChange}>自定义2</div> },
+        { type: 'input', label: '标题', prop: 'title', rules: [{ required: true, message: '请输入标题' }] },
+        {
+          type: 'datePicker', label: '发布时间', prop: 'publishDate',
+          config: {
+            type: 'date',
+            format: 'yyyy-MM-dd'
+          }
+        },
+        { type: 'pic', label: '文章封面', prop: 'coverImgUrl' },
+        { type: 'ueditor', label: '发布内容', prop: 'text' }
+      ]
+    },
     getList() {
       this.listLoading = true
       action(this.url.list, this.queryParams)
@@ -196,7 +197,13 @@ export default {
       this.getList()
     },
     onDelete() {
+      this.$confirm('是否要进行该删除操作?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
 
+      })
     },
     handleOk() {
       this.$refs.baseForm.validate((valid) => {

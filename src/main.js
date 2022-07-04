@@ -22,6 +22,10 @@ import { getDicts } from '@/api/system/dict/data'
 import { getConfigKey } from '@/api/system/config'
 import { parseTime, resetForm, addDateRange, selectDictLabel, download, handleTree } from '@/utils/ruoyi'
 import Pagination from '@/components/Pagination'
+import BaseTable from '@/components/BaseTable'
+import BaseSearch from '@/components/BaseSearch'
+import BaseDialog from '@/components/BaseDialog'
+import BaseForm from '@/components/BaseForm'
 
 // 全局方法挂载
 Vue.prototype.getDicts = getDicts
@@ -47,6 +51,10 @@ Vue.prototype.msgInfo = function(msg) {
 
 // 全局组件挂载
 Vue.component('Pagination', Pagination)
+Vue.component('BaseTable', BaseTable)
+Vue.component('BaseSearch', BaseSearch)
+Vue.component('BaseDialog', BaseDialog)
+Vue.component('BaseForm', BaseForm)
 
 Vue.use(permission)
 Vue.use(template)
